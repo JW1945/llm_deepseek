@@ -1,0 +1,195 @@
+<!aDOCTYPE html>
+<html>
+<head>
+    <title>Deepseek Chat</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #343541;
+            color: white;
+        }
+        .chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px 20px 100px; /* Added bottom padding for input */
+        }
+        .message {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+            line-height: 1.6;
+        }
+        .message pre {
+            background: #2d2d2d;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+        .message code {
+            font-family: Consolas, monospace;
+            background: #2d2d2d;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .message blockquote {
+            border-left: 3px solid #666;
+            padding-left: 15px;
+            margin: 15px 0;
+            color: #aaa;
+        }
+        .message ul, .message ol {
+            padding-left: 25px;
+            margin: 15px 0;
+        }
+        .message li {
+            margin: 8px 0;
+        }
+        .message h1, .message h2, .message h3 {
+            margin: 20px 0 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #555;
+        }
+        .message p {
+            margin: 10px 0;
+        }
+        .message a {
+            color: #58a6ff;
+            text-decoration: none;
+        }
+        .message a:hover {
+            text-decoration: underline;
+        }
+        .message table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .message th, .message td {
+            padding: 8px;
+            border: 1px solid #555;
+        }
+        .message th {
+            background-color: #444;
+        }
+        .user {
+            background: #444654;
+        }
+        .assistant {
+            background: #40414f;
+        }
+        .input-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #40414f;
+            padding: 20px;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #40414f;
+            color: white;
+        }
+        .token-count {
+            color: #888;
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container" id="chat-container">
+        {% for message in messages %}
+        <div class="message {{ message.role }}">
+            {{ message.content }}
+            {% if message.tokens %}
+            <div class="token-count">Tokens: {{ message.tokens }}</div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    
+    <div class="input-container">
+        <form id="chat-form" onsubmit="sendMessage(event); return false;">
+            <input type="text" id="user-input" autocomplete="off" placeholder="Type your message...">
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        function sendMessage(event) {
+            event.preventDefault();
+            const input = document.getElementById('user-input');
+            const message = input.value.trim();
+            if (!message) return;
+
+            // Add user message
+            const chatContainer = document.getElementById('chat-container');
+            chatContainer.innerHTML += `
+                <div class="message user">
+                    ${marked.parse(message)}
+                </div>
+            `;
+
+            // Clear input
+            input.value = '';
+
+            // Create assistant message container
+            const assistantMessage = document.createElement('div');
+            assistantMessage.className = 'message assistant';
+            const contentDiv = document.createElement('div');
+            const tokenCount = document.createElement('div');
+            tokenCount.className = 'token-count';
+            assistantMessage.appendChild(contentDiv);
+            assistantMessage.appendChild(tokenCount);
+            chatContainer.appendChild(assistantMessage);
+
+            // Function to scroll smoothly
+            const scrollToBottom = () => {
+                setTimeout(() => {
+                    chatContainer.scrollTo({
+                        top: chatContainer.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }, 50);
+            };
+
+            // Initial scroll after adding message
+            scrollToBottom();
+
+            // Send to server and handle streaming
+            const eventSource = new EventSource(`/chat?message=${encodeURIComponent(message)}`);
+            let fullResponse = '';
+            let totalTokens = 0;
+
+            eventSource.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                
+                if (data.error) {
+                    contentDiv.innerHTML = `Error: ${data.error}`;
+                    eventSource.close();
+                    scrollToBottom();
+                    return;
+                }
+
+                fullResponse += data.response;
+                totalTokens += data.tokens;
+                contentDiv.innerHTML = marked.parse(fullResponse);
+                tokenCount.textContent = `Tokens: ${totalTokens}`;
+                scrollToBottom();
+            };
+
+            eventSource.onerror = function() {
+                eventSource.close();
+            };
+        }
+    </script>
+</body>
+</html>

@@ -1,7 +1,6 @@
 import os
 import requests
 import json
-import shutil
 import logging
 import tiktoken
 from typing import Dict, List, Generator, Optional, Tuple
@@ -143,71 +142,3 @@ def get_api_key() -> str:
     if not api_key:
         raise ValueError("Please set DEEPSEEK_API_KEY environment variable")
     return api_key
-
-
-def chat_interface():
-    """Run the interactive chat interface."""
-    api_key = get_api_key()
-    chat = DeepseekChat(api_key)
-    messages = []
-
-    print("Welcome to Deepseek Chat! Type 'exit' to end the conversation.")
-    print("Type 'clear' to reset the conversation history.\n")
-
-    while True:
-        try:
-            user_input = input("\nYou: ").strip()
-
-            if user_input.lower() == "exit":
-                print("Goodbye!")
-                break
-
-            if user_input.lower() == "clear":
-                messages = []
-                print("Conversation history cleared.")
-                continue
-
-            if not user_input:
-                print("Please type something to continue the conversation.")
-                continue
-
-            messages.append({"role": "user", "content": user_input})
-
-            # Count input tokens
-            input_tokens = chat.tokenizer.count_tokens(json.dumps(messages))
-            print(f"\033[91m[Input tokens: {input_tokens}]\033[0m\n")
-
-            print("AI: ", end="", flush=True)
-            full_response = ""
-            output_tokens = 0
-            try:
-                for chunk, token_count in chat.chat_stream(messages):
-                    print(chunk, end="", flush=True)
-                    full_response += chunk
-                    output_tokens += token_count
-                # Add a small delay for better streaming effect
-                sleep(0.02)
-                print(f"\n\033[91m[Output tokens: {output_tokens}]\033[0m")
-            except Exception as e:
-                print(f"\nError: {e}")
-                messages.pop()  # Remove the last message that caused the error
-                continue
-
-            # Add separator line
-            terminal_width = shutil.get_terminal_size().columns
-            YELLOW = "\033[93m"
-            RESET = "\033[0m"
-            print(f"\n{YELLOW}{'=' * terminal_width}{RESET}")
-
-            messages.append({"role": "assistant", "content": full_response})
-
-        except KeyboardInterrupt:
-            print("\nGoodbye!")
-            break
-        except Exception as e:
-            print(f"\nUnexpected error: {e}")
-            break
-
-
-if __name__ == "__main__":
-    chat_interface()

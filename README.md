@@ -7,14 +7,6 @@ This repository provides two different methods to interact with the DeepSeek Lan
 ## Features
 - Direct terminal interaction using PowerShell
 - Web-based GUI interface
-- Support for DeepSeek code and chat models
-- Real-time responses
-- Easy-to-use interfaces
-
-## Prerequisites
-- Python 3.8 or higher
-- DeepSeek API token
-- Required Python packages (see requirements.txt)
 
 ## Setup
 

@@ -5,7 +5,7 @@ This repository provides two different methods to interact with the DeepSeek Lan
 2. Web-based interface
 
 ## Features
-- Direct terminal interaction using PowerShell
+- Direct terminal interaction (I'm using PowerShell)
 - Web-based GUI interface
 
 ## Setup
@@ -25,7 +25,7 @@ uv run token_deepseek.py
 
 Run the terminal version using:
 ```bash
-python token_deepseek.py
+uv run token_deepseek.py
 ```
 This will start an interactive PowerShell session where you can directly chat with the DeepSeek model.
 
@@ -35,7 +35,7 @@ Features:
 - Quick responses
 - Ideal for command-line users
 
-### Method 2: Web-based Interface (web_deepseek.py)
+### Method 2: Web-based Interface (web_deepseek.py) by using app.py
 
 Launch the web interface using:
 ```bash

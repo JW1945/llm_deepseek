@@ -1,4 +1,4 @@
-<!aDOCTYPE html>
+<!DOCTYPE html>
 <html>
 <head>
     <title>Deepseek Chat</title>
@@ -115,7 +115,7 @@
         </div>
         {% endfor %}
     </div>
-    
+
     <div class="input-container">
         <form id="chat-form" onsubmit="sendMessage(event); return false;">
             <input type="text" id="user-input" autocomplete="off" placeholder="Type your message...">
@@ -129,6 +129,40 @@
             const input = document.getElementById('user-input');
             const message = input.value.trim();
             if (!message) return;
+
+            // Check if the message is "clear"
+            if (message.toLowerCase() === "clear") {
+                // Clear the chat container
+            const chatContainer = document.getElementById('chat-container');
+                chatContainer.innerHTML = '';
+
+                // Add a message indicating that the chat has been cleared
+                chatContainer.innerHTML += `
+                    <div class="message assistant">
+                        All previous conversations have been cleared.
+                </div>
+            `;
+
+                // Clear the input
+            input.value = '';
+
+                // Scroll to the bottom
+                    chatContainer.scrollTo({
+                        top: chatContainer.scrollHeight,
+                        behavior: 'smooth'
+                    });
+
+                // Send the "clear" command to the backend
+                fetch(`/chat?message=${encodeURIComponent(message)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Handle the response if needed
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                return;
+            }
 
             // Add user message
             const chatContainer = document.getElementById('chat-container');
@@ -168,16 +202,15 @@
             const eventSource = new EventSource(`/chat?message=${encodeURIComponent(message)}`);
             let fullResponse = '';
             let totalTokens = 0;
-
             eventSource.onmessage = function(event) {
                 const data = JSON.parse(event.data);
-                
+
                 if (data.error) {
                     contentDiv.innerHTML = `Error: ${data.error}`;
-                    eventSource.close();
+                eventSource.close();
                     scrollToBottom();
                     return;
-                }
+        }
 
                 fullResponse += data.response;
                 totalTokens += data.tokens;

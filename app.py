@@ -20,6 +20,11 @@ def chat_endpoint():
     if not user_message:
         return jsonify({"error": "No message provided"}), 400
 
+    # Check if the message is "clear"
+    if user_message.strip().lower() == "clear":
+        messages.clear()  # Clear all messages
+        return jsonify({"response": "All messages have been cleared.", "tokens": 0})
+
     # Add user message
     messages.append({"role": "user", "content": user_message})
 

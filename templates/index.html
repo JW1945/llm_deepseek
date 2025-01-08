@@ -7,8 +7,8 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            background: #343541;
-            color: white;
+            background: #1c1f2b;
+            color: #e0e7ff;
         }
         .chat-container {
             max-width: 800px;
@@ -22,7 +22,8 @@
             line-height: 1.6;
         }
         .message pre {
-            background: #2d2d2d;
+            background: #2a3548;
+            border: 1px solid #4a90e2;
             padding: 15px;
             border-radius: 5px;
             overflow-x: auto;
@@ -30,7 +31,9 @@
         }
         .message code {
             font-family: Consolas, monospace;
-            background: #2d2d2d;
+            background: #2a3548;
+            color: #e0e7ff;
+            border: 1px solid #4a90e2;
             padding: 2px 4px;
             border-radius: 3px;
         }
@@ -56,7 +59,7 @@
             margin: 10px 0;
         }
         .message a {
-            color: #58a6ff;
+            color: #ff7f7f;
             text-decoration: none;
         }
         .message a:hover {
@@ -72,29 +75,36 @@
             border: 1px solid #555;
         }
         .message th {
-            background-color: #444;
+            background-color: #2a3548;
+            color: #e0e7ff;
+            border-bottom: 2px solid #4a90e2;
         }
         .user {
-            background: #444654;
+            background: #2a3548;
+            border-left: 4px solid #4a90e2; /* Mondstadt blue */
         }
         .assistant {
-            background: #40414f;
+            background: #2b2d42;
+            border-left: 4px solid #ff7f7f; /* Liyue red */
         }
         .input-container {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            background: #40414f;
+            background: #2b2d42;
             padding: 20px;
-        box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+            border-top: 1px solid #4a90e2;
         }
         input[type="text"] {
             width: 100%;
             padding: 10px;
             border: none;
             border-radius: 5px;
-            background: #40414f;
+            background: #2a3548;
+            color: #e0e7ff;
+            border: 1px solid #4a90e2;
             color: white;
         }
         .token-count {

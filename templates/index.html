@@ -93,17 +93,19 @@
             left: 0;
             right: 0;
             background: rgba(43, 45, 66, 0.95);
-            padding: 20px 20px;
+            padding: 20px 0; /* Adjusted padding to make it symmetrical */
             backdrop-filter: blur(10px);
             box-shadow: 0 -4px 15px rgba(0, 0, 0, 0.3);
             border-top: 1px solid rgba(74, 144, 226, 0.3);
             box-sizing: border-box;
             transition: all 0.3s ease;
+            display: flex;
+            justify-content: center; /* Center the input box horizontally */
         }
 
         .input-container form {
             width: 100%;
-            padding: 0 20px;
+            padding: 0 20px; /* Adjusted padding to make it symmetrical */
         }
 
         .input-container:hover {
@@ -112,9 +114,9 @@
         }
 
         input[type="text"] {
-            width: calc(100% - 32px); /* Adjust width here */
-            margin: 0 0px; /* Adjust margin here */
-            padding: 12px 12px; /* Adjust padding here */
+            width: 100%; /* Full width of the form */
+            margin: 0; /* Remove margin */
+            padding: 12px 16px; /* Adjusted padding for better symmetry */
             border: none;
             border-radius: 12px;
             background: rgba(42, 53, 72, 0.9);

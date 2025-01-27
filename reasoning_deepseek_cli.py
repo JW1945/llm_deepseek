@@ -57,7 +57,7 @@ def chat():
             try:
                 user_input = input("\nYou: ")
 
-                if user_input.lower() == "exit":
+                if user_input.lower() in ("exit", "quit"):
                     print("Goodbye!")
                     break
 
@@ -65,7 +65,7 @@ def chat():
 
                 print("\nAssistant:")
                 response = requests.post(
-                    "https://api.deepseek.com/v1/chat/completions",
+                    "https://api.deepseek.com/chat/completions",
                     headers=headers,
                     json={
                         "model": "deepseek-reasoner",

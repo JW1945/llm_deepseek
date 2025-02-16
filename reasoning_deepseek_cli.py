@@ -1,6 +1,7 @@
 import requests
 import json
 import os
+import tiktoken
 
 
 def process_stream_response(response):
@@ -36,7 +37,7 @@ def process_stream_response(response):
                 except json.JSONDecodeError:
                     continue
     print()  # New line after stream ends
-    return reasoning_content, content  # currently return object aren't used
+    return reasoning_content, content
 
 
 def chat():
@@ -77,6 +78,12 @@ def chat():
                 )
 
                 reasoning_content, content = process_stream_response(response)
+                encoding = tiktoken.get_encoding("cl100k_base")
+                reasoning_tokens = len(encoding.encode(reasoning_content))
+                content_tokens = len(encoding.encode(content))
+                print(
+                    f"\n\033[35m[TOKENS] Reasoning: {reasoning_tokens}, Content: {content_tokens}\033[0m"
+                )
 
                 # Add assistant's response to message history
                 messages.append({"role": "assistant", "content": content})
